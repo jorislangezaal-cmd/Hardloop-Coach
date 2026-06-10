@@ -1,0 +1,625 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Run Coach">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0f172a">
+<title>Run Coach 9.0</title>
+<style>
+:root{--bg:#eef2f7;--card:#fff;--text:#111827;--muted:#64748b;--line:#e5e7eb;--green:#10b981;--blue:#2563eb;--orange:#f59e0b;--red:#ef4444;--purple:#7c3aed;--cyan:#06b6d4}
+@media(prefers-color-scheme:dark){:root{--bg:#08111f;--card:#101827;--text:#f8fafc;--muted:#94a3b8;--line:#243044}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:12px 12px 96px;max-width:620px;margin-inline:auto}
+.hero{background:linear-gradient(135deg,#0f172a,#2563eb 52%,#7c3aed);color:white;border-radius:28px;padding:20px;margin:4px 0 12px;box-shadow:0 14px 34px rgba(37,99,235,.28)}
+h1{font-size:34px;line-height:1;margin:0}h2{margin:0 0 12px}.sub{opacity:.86;font-size:14px;line-height:1.4}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:16px}.metric{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.18);border-radius:18px;padding:12px;min-height:72px}.metric span{font-size:12px;opacity:.82}.metric b{font-size:21px;display:block;margin-top:4px}.metric small{display:block;font-size:11px;opacity:.8;margin-top:-2px}.heroMetrics .raceMetric{background:rgba(16,185,129,.18);border-color:rgba(16,185,129,.28)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:15px;margin:10px 0;box-shadow:0 4px 18px rgba(15,23,42,.05)}.row{display:flex;justify-content:space-between;gap:12px;align-items:center}.muted{color:var(--muted);font-size:14px}
+.bar{height:14px;background:var(--line);border-radius:999px;overflow:hidden;margin-top:10px}.fill{height:100%;width:0;background:var(--green);transition:.25s}.fill.orange{background:var(--orange)}.fill.red{background:var(--red)}
+.nav{display:flex;gap:8px;overflow:auto;position:sticky;top:0;z-index:20;background:linear-gradient(var(--bg) 80%,transparent);padding:8px 0}.nav button{white-space:nowrap;border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:999px;padding:10px 13px;font-weight:800}.nav button.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.weekHead{display:flex;justify-content:space-between;align-items:center;gap:10px}.weekHead h2{font-size:22px}.badge{color:#fff;background:var(--blue);border-radius:999px;padding:6px 10px;font-size:12px;font-weight:900}.Basis{background:var(--blue)}.Specifiek{background:var(--purple)}.Herstel{background:var(--green)}.Raceweek{background:var(--red)}
+.workout{display:grid;grid-template-columns:34px 1fr;gap:10px;padding:14px 0;border-top:1px solid var(--line)}.workout:first-of-type{border-top:0}input[type=checkbox]{width:26px;height:26px;accent-color:var(--green)}
+.wtitle{font-weight:900;font-size:16px;margin-bottom:5px}.details{color:var(--muted);font-size:14px;line-height:1.45}
+.recommend{margin-top:7px;background:rgba(37,99,235,.08);border:1px solid rgba(37,99,235,.18);padding:9px;border-radius:13px;font-size:14px}.recommend.changed{background:rgba(245,158,11,.13);border-color:rgba(245,158,11,.38)}.recommend.same{background:rgba(16,185,129,.10);border-color:rgba(16,185,129,.28)}
+.coachLabel{display:inline-block;font-size:11px;font-weight:900;color:#fff;background:var(--orange);border-radius:999px;padding:4px 7px;margin-bottom:5px}.coachLabel.same{background:var(--green)}.paceCompare{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.paceBox{border:1px solid var(--line);border-radius:12px;padding:8px;background:rgba(100,116,139,.06)}.paceBox b{display:block;font-size:15px}.paceDelta{margin-top:8px;font-weight:900}.paceDelta.fast{color:var(--green)}.paceDelta.slow{color:var(--orange)}.paceDelta.same{color:var(--muted)}.coachReason{margin-top:8px;border-top:1px solid var(--line);padding-top:8px;font-size:13px;line-height:1.45;color:var(--muted)}.coachReason b{color:var(--text)}.fuel{color:var(--orange);font-weight:900}
+.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}.actions button,.smallbtn{border:0;border-radius:12px;padding:10px 12px;font-weight:900;background:var(--blue);color:#fff}.delete{background:var(--red)!important}.edit{background:var(--blue)!important}.finish{background:var(--green)!important}.ghost,.cancel{background:var(--card)!important;color:var(--text)!important;border:1px solid var(--line)!important}
+.loggrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}input,textarea,select{width:100%;border:1px solid var(--line);border-radius:14px;background:transparent;color:var(--text);padding:11px;font:inherit}textarea{min-height:72px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.mini,.zone{border:1px solid var(--line);border-radius:18px;padding:13px;background:var(--card)}.mini b,.zone b{display:block;font-size:20px}
+.pacePreview,.coachBox{margin-top:10px;padding:12px;border-radius:16px;border:1px solid var(--line);background:rgba(37,99,235,.08);font-weight:900}.goodbox{background:rgba(16,185,129,.12)!important;border-color:rgba(16,185,129,.35)!important}.warnbox{background:rgba(245,158,11,.14)!important;border-color:rgba(245,158,11,.38)!important}.badbox{background:rgba(239,68,68,.12)!important;border-color:rgba(239,68,68,.35)!important}.helpbox{margin-top:10px;padding:11px;border-radius:15px;border:1px solid var(--line);background:rgba(100,116,139,.08);font-size:14px;line-height:1.45}.analysisText{font-size:13px;line-height:1.35;color:var(--muted);margin-top:4px}
+.danger{color:var(--red);font-weight:900}.good{color:var(--green);font-weight:900}.warn{color:var(--orange);font-weight:900}.cyan{color:var(--cyan);font-weight:900}.suggestion,.explainBox{margin-top:10px;padding:12px;border-radius:16px;border:1px solid rgba(6,182,212,.35);background:rgba(6,182,212,.10);line-height:1.45}.explainBox{font-size:14px;color:var(--muted)}.scoreBig{font-size:32px;font-weight:950}
+canvas{width:100%;height:180px;border:1px solid var(--line);border-radius:16px;background:rgba(100,116,139,.05)}
+.tools{position:fixed;left:0;right:0;bottom:0;background:rgba(120,120,120,.18);backdrop-filter:blur(18px);padding:10px 12px calc(10px + env(safe-area-inset-bottom));display:flex;gap:8px;justify-content:center}.tools button{flex:1;max-width:220px;border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:14px;padding:12px 10px;font-weight:900}.tools button.active{background:var(--blue);color:#fff;border-color:var(--blue)}.coachStatus{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:8px 10px;font-size:13px;font-weight:900;background:rgba(245,158,11,.14);border:1px solid rgba(245,158,11,.38)}.coachStatus.active{background:rgba(16,185,129,.13);border-color:rgba(16,185,129,.38)}.hidden{display:none}.onboarding{position:fixed;inset:0;background:var(--bg);z-index:9999;overflow:auto;padding:18px}.onboarding .card{max-width:620px;margin:12px auto}.onboardingHero{background:linear-gradient(135deg,#0f172a,#2563eb 55%,#7c3aed);color:#fff;border-radius:28px;padding:22px;margin:0 auto 12px;max-width:620px}.onboardingHero h1{margin:0 0 8px}.onboardingHero p{margin:0;opacity:.85}.onboarding.hidden{display:none}.profileBanner{margin-top:10px;padding:12px;border-radius:18px;background:rgba(16,185,129,.13);border:1px solid rgba(16,185,129,.35);font-size:14px}.profileGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.profileGrid label{font-size:13px;color:var(--muted);display:block;margin-bottom:4px}.profileGrid .full{grid-column:span 2}@media(max-width:430px){.profileGrid{grid-template-columns:1fr}.profileGrid .full{grid-column:span 1}}.readiness button{border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:14px;padding:10px 12px;font-weight:900}.readiness button.active{background:var(--blue);color:#fff;border-color:var(--blue)}.trackerStats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.routeCanvas{width:100%;height:240px;border:1px solid var(--line);border-radius:18px;background:rgba(100,116,139,.07)}
+table{width:100%;border-collapse:collapse;font-size:14px}td,th{border-bottom:1px solid var(--line);padding:9px;text-align:left;vertical-align:top}th{color:var(--muted)}
+@media(max-width:430px){body{padding-left:10px;padding-right:10px}.metrics{grid-template-columns:1fr 1fr}.heroMetrics .raceMetric{grid-column:span 2;order:3}.loggrid{grid-template-columns:1fr}.grid{grid-template-columns:1fr}.nav button{padding:9px 11px}.tools button{font-size:13px}}
+</style>
+</head>
+<body>
+
+<div id="onboarding" class="onboarding hidden">
+  <div class="onboardingHero">
+    <h1>Welkom bij Run Coach</h1>
+    <p>Vul eerst je gegevens in. Daarna maakt de app je persoonlijke halve-marathoncoach klaar.</p>
+  </div>
+  <section class="card">
+    <h2>Profiel instellen</h2>
+    <div class="profileGrid">
+      <div><label>Naam</label><input id="onName" placeholder="Bijv. Joris"></div>
+      <div><label>Leeftijd</label><input id="onAge" type="number" placeholder="28"></div>
+      <div><label>Geslacht/profiel</label><select id="onGender"><option value="Man">Man</option><option value="Vrouw">Vrouw</option><option value="Anders">Anders</option></select></div>
+      <div><label>Race-datum</label><input id="onRaceDate" type="date"></div>
+      <div><label>Afstand/doel</label><select id="onDistance" onchange="syncGoalPlaceholder('on')"><option value="5k">5 km</option><option value="10k">10 km</option><option value="hm">Halve marathon</option></select></div>
+      <div><label>Trainingen per week</label><select id="onTrainingsPerWeek"><option value="2">2x per week</option><option value="3">3x per week</option></select></div>
+      <div><label>Doeltijd</label><input id="onGoalTime" placeholder="2:15:00"></div>
+      <div><label>Huidige 5 km tijd</label><input id="onFiveK" placeholder="29:00"></div>
+      <div><label>Max. hartslag bekend?</label><input id="onMaxHr" type="number" placeholder="leeg = 220 - leeftijd"></div>
+      <div><label>Huidig niveau</label><select id="onLevel"><option value="beginner">Beginner</option><option value="gevorderd">Gevorderd</option></select></div>
+      <div class="full"><label>Doel</label><select id="onGoalType"><option value="finish">Uitlopen</option><option value="time">Tijd halen</option></select></div>
+    </div>
+    <div class="actions"><button class="smallbtn" onclick="completeOnboarding()">Start Run Coach</button></div>
+    <p class="muted">Je gegevens blijven lokaal op je eigen telefoon. Je kunt dit later aanpassen via het tabblad Profiel.</p>
+  </section>
+</div>
+
+<section class="hero">
+<h1 id="heroTitle">Run Coach</h1>
+<div id="profileHero" class="sub"></div>
+<div class="metrics heroMetrics"><div class="metric"><span>Huidige week</span><b id="weekTop">—</b></div><div class="metric raceMetric"><span id="raceCountdownLabel">Tot race</span><b id="daysTop">—</b><small>dagen</small></div><div class="metric"><span>Voorspelling</span><b id="predictionTop">—</b></div></div>
+</section>
+<nav class="nav"><button id="tab-dashboard" class="active" onclick="tab('dashboard')">Dashboard</button><button id="tab-plan" onclick="tab('plan')">Schema</button><button id="tab-now" onclick="tab('now')">Deze week</button><button id="tab-log" onclick="tab('log')">Log</button><button id="tab-coach" onclick="tab('coach')">Coach</button><button id="tab-stats" onclick="tab('stats')">Stats</button><button id="tab-profile" onclick="tab('profile')">Profiel</button><button id="tab-info" onclick="tab('info')">Info</button></nav>
+
+<section class="card"><div class="row"><b>Voortgang</b><span class="muted" id="doneText"></span></div><div class="bar"><div class="fill" id="fill"></div></div></section>
+<section class="card"><div class="row"><b>Coach status</b><span id="coachStatus" class="coachStatus">⏳ Nog onvoldoende data</span></div><p class="muted" id="coachStatusText">Log minimaal 3 trainingen voordat persoonlijke tempo-aanpassingen actief worden.</p></section>
+
+<main id="dashboard">
+<section class="card"><h2>Coachdashboard</h2><div id="dashboardAdvice" class="coachBox"></div></section>
+<section class="card"><h2>Hoe voel je je vandaag?</h2><div class="actions readiness"><button onclick="setReadiness('fris',this)">😀 Fris</button><button onclick="setReadiness('normaal',this)">🙂 Normaal</button><button onclick="setReadiness('vermoeid',this)">😐 Vermoeide benen</button><button onclick="setReadiness('erg-vermoeid',this)">😕 Erg vermoeid</button><button onclick="setReadiness('pijn',this)">🤕 Pijn/blessure</button></div><div id="readinessAdvice" class="coachBox"></div></section>
+<section class="card"><h2>Volgende training</h2><div id="nextWorkout"></div></section>
+<section class="card"><h2>Belasting & herstel</h2><div class="grid"><div class="mini"><b id="loadScore">—</b><span class="muted">trainingsbelasting 7 dagen</span></div><div class="mini"><b id="recoveryScore">—</b><span class="muted">herstelscore</span></div></div><div class="bar"><div class="fill" id="loadFill"></div></div><p class="muted" id="loadText"></p><div class="explainBox"><b>Wat betekent dit?</b><br>Belasting kijkt naar hoeveel km je de laatste 7 dagen hebt gelopen ten opzichte van je geplande week, plus extra punten voor hoge hartslag, zwaar gevoel, tempo/race-trainingen en vermoeidheid. Herstel is de kleur: groen = prima, oranje = opletten, rood = rustiger aan.</div></section>
+<section class="card"><h2>Fitness & trend</h2><div class="grid"><div class="mini"><b id="fitnessScore">—</b><span class="muted">fitness score</span></div><div class="mini"><b id="trendText">—</b><span class="muted">Zone 2-trend</span></div></div><div id="volumeSuggestion" class="suggestion"></div><div class="explainBox"><b>Wat meet dit?</b><br>Fitness score is een indicatie op basis van consistentie, langste duurloop, Zone 2-tempo en test/tempo-data. Trend vergelijkt je rustige Zone 2-tempo’s: als je bij lage hartslag sneller loopt, gaat je trend omhoog.</div></section>
+<section class="card"><h2>Zone 2-progressie</h2><canvas id="z2canvas" width="700" height="240"></canvas><p class="muted">Gebaseerd op rustige/long runs met hartslag binnen je Zone 2.</p><div class="explainBox"><b>Wanneer telt een training mee?</b><br>Alleen trainingen met type <b>Rustig</b>, <b>Lange duurloop</b> of <b>Herstel</b> tellen mee, én alleen als je afstand, tijd en gemiddelde hartslag invult. De gemiddelde hartslag moet binnen je persoonlijke Zone 2 zijn. Je ziet de grafiek vanaf minimaal 2 geldige Zone 2-trainingen.</div></section>
+</main>
+
+<main id="plan" class="hidden"></main>
+<main id="now" class="hidden"></main>
+
+<main id="log" class="hidden">
+<section class="card"><h2 id="logTitle">Training loggen</h2><div class="loggrid">
+<select id="logType" onchange="updatePacePreview()"><option value="easy">Rustig</option><option value="steady">Steady</option><option value="tempo">Tempo</option><option value="hm">HM-tempo</option><option value="long">Lange duurloop</option><option value="recovery">Herstel</option><option value="race">Race/test</option></select>
+<input id="logDate" type="date"><input id="logKm" type="number" step="0.1" placeholder="afstand km" oninput="updatePacePreview()"><input id="logTime" placeholder="tijd bv 37:30" oninput="updatePacePreview()">
+<input id="logHr" type="number" placeholder="gem. hartslag" oninput="updatePacePreview()"><select id="logRpe" onchange="updatePacePreview()"><option value="">gevoel 1-10</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option></select>
+<select id="logRecovery"><option value="">na afloop: hoe voel je je?</option><option value="fris">🟢 goed / fris</option><option value="normaal">🟡 normale vermoeidheid</option><option value="vermoeid">🔴 erg vermoeid / zware benen</option><option value="pijn">🤕 pijn of blessureklachten</option></select>
+</div>
+<div id="typeHelp" class="helpbox"></div>
+<div id="pacePreview" class="pacePreview">Vul afstand en tijd in om je gemiddelde tempo te zien.</div>
+<textarea id="logNote" placeholder="Notities: route, weer, Apple Watch opmerkingen..."></textarea><div class="actions"><button class="smallbtn" onclick="addLog()">Opslaan & tempo aanpassen</button><button class="smallbtn cancel" onclick="clearLogForm()">Annuleer wijziging</button></div></section>
+<section class="card"><h2>Logboek</h2><div id="logTable"></div></section>
+</main>
+
+
+<main id="coach" class="hidden">
+<section class="card"><h2>Coach advies</h2><div id="coachAdvice"></div></section>
+<section class="card"><h2>Jouw adaptieve tempo's</h2><div class="grid"><div class="mini"><b id="easyPace">—</b><span class="muted">rustige loop</span></div><div class="mini"><b id="steadyPace">—</b><span class="muted">steady</span></div><div class="mini"><b id="tempoPace">—</b><span class="muted">tempo/HM blok</span></div><div class="mini"><b id="longPace">—</b><span class="muted">lange duurloop</span></div></div></section>
+<section class="card"><h2>Halve marathon voorspelling</h2><p id="predictionText" class="muted"></p></section>
+<section class="card"><h2>Voedingsplanner</h2><div id="fuelPlan"></div></section>
+</main>
+
+<main id="stats" class="hidden">
+<section class="card"><h2>Hardloper-profiel</h2><p class="muted">Deze gegevens gebruikt de coach voor je doeltempo, hartslagzones en persoonlijke adviezen.</p><div class="grid"><div class="mini"><b id="profileAge">—</b><span class="muted">leeftijd</span></div><div class="mini"><b id="profileGender">—</b><span class="muted">profiel</span></div><div class="mini"><b id="profileGoal">—</b><span class="muted">doeltijd</span></div><div class="mini"><b id="profileGoalPace">—</b><span class="muted">doeltempo</span></div><div class="mini"><b id="profileRaceDate">—</b><span class="muted">wedstrijd</span></div><div class="mini"><b id="profileDistance">—</b><span class="muted">afstand</span></div><div class="mini"><b id="profileTrainingDays">—</b><span class="muted">trainingsdagen</span></div></div></section>
+<section class="card"><h2>Hardloopstatistieken</h2><div class="grid"><div class="mini"><b id="sWorkouts">0</b><span class="muted">trainingen gelogd</span></div><div class="mini"><b id="sKm">0 km</b><span class="muted">totaal gelopen</span></div><div class="mini"><b id="sAvgHr">—</b><span class="muted">gem. hartslag</span></div><div class="mini"><b id="sLongest">—</b><span class="muted">langste duurloop</span></div><div class="mini"><b id="sBestZ2">—</b><span class="muted">beste Zone 2-tempo</span></div><div class="mini"><b id="sPrediction">—</b><span class="muted">Voorspelling</span></div><div class="mini"><b id="sFitness">—</b><span class="muted">fitness score</span></div><div class="mini"><b id="sTrend">—</b><span class="muted">trend</span></div></div></section>
+<section class="card"><h2>Persoonlijke records</h2><p class="muted">Vul hier je beste tijden in. De coach gebruikt vooral je gelogde trainingen, maar PR’s geven jou overzicht.</p><div class="loggrid"><input id="pr1" placeholder="1 km PR, bv 5:45"><input id="pr5" placeholder="5 km PR, bv 29:00"><input id="pr10" placeholder="10 km PR"><input id="prHm" placeholder="Halve marathon PR / doel"></div><button class="smallbtn" onclick="savePRs()">PR's opslaan</button></section>
+</main>
+
+
+<main id="profile" class="hidden">
+<section class="card"><h2>Gebruiker instellen</h2><p class="muted">Vul dit één keer in. Iedere gebruiker bewaart zijn eigen gegevens lokaal op zijn eigen telefoon.</p>
+<div class="profileGrid">
+<div><label>Naam</label><input id="setName" placeholder="Bijv. Joris"></div>
+<div><label>Leeftijd</label><input id="setAge" type="number" placeholder="28"></div>
+<div><label>Geslacht/profiel</label><select id="setGender"><option value="Man">Man</option><option value="Vrouw">Vrouw</option><option value="Anders">Anders</option></select></div>
+<div><label>Race-datum</label><input id="setRaceDate" type="date"></div>
+<div><label>Afstand/doel</label><select id="setDistance" onchange="syncGoalPlaceholder('set')"><option value="5k">5 km</option><option value="10k">10 km</option><option value="hm">Halve marathon</option></select></div>
+<div><label>Trainingen per week</label><select id="setTrainingsPerWeek"><option value="2">2x per week</option><option value="3">3x per week</option></select></div>
+<div><label>Doeltijd</label><input id="setGoalTime" placeholder="2:15:00"></div>
+<div><label>Huidige 5 km tijd</label><input id="setFiveK" placeholder="29:00"></div>
+<div><label>Max. hartslag bekend?</label><input id="setMaxHr" type="number" placeholder="leeg = 220 - leeftijd"></div>
+<div><label>Huidig niveau</label><select id="setLevel"><option value="beginner">Beginner</option><option value="gevorderd">Gevorderd</option></select></div>
+<div class="full"><label>Doel</label><select id="setGoalType"><option value="finish">Uitlopen</option><option value="time">Tijd halen</option></select></div>
+</div>
+<div class="actions"><button class="smallbtn" onclick="saveProfile()">Profiel opslaan</button><button class="smallbtn ghost" onclick="loadProfileForm()">Herlaad formulier</button></div>
+<div class="profileBanner" id="profileSummary"></div>
+</section>
+<section class="card"><h2>Wat past de app aan?</h2><p class="muted">De app past vooral tempo’s, hartslagzones, doeltempo, countdown en voorspelling aan. De afstandsopbouw blijft een veilig halve-marathonschema. Als iemand al gevorderd is, kan de coach na logs sneller tempo’s en adviezen aanpassen, maar hij gaat niet agressief extra kilometers toevoegen.</p></section>
+</main>
+
+<main id="info" class="hidden">
+
+<section class="card"><h2>Hartslagzones</h2><div class="grid"><div class="zone"><b>Zone 1</b>96-115 bpm<br><span class="muted">herstel</span></div><div class="zone"><b>Zone 2</b>115-145 bpm<br><span class="muted">duurvermogen</span></div><div class="zone"><b>Zone 3</b>145-163 bpm<br><span class="muted">steady</span></div><div class="zone"><b>Zone 4</b>163-177 bpm<br><span class="muted">tempo</span></div></div></section>
+<section class="card"><h2>Data back-up</h2><p class="muted">Gebruik export vóór updates. De export verschijnt hieronder zodat je hem kunt kopiëren of downloaden.</p><div class="actions"><button class="smallbtn ghost" onclick="exportData()">Maak export</button><button class="smallbtn ghost" onclick="downloadExport()">Download back-up</button><button class="smallbtn ghost" onclick="resetAll()">Reset vinkjes</button></div><textarea id="exportBox" placeholder="Je export verschijnt hier na klikken op Maak export..." readonly></textarea><p class="muted">Import: plak je back-up hieronder en klik op importeren.</p><textarea id="importBox" placeholder="Plak hier je geëxporteerde data..."></textarea><div class="actions"><button class="smallbtn" onclick="importData()">Importeer data</button><button class="smallbtn ghost" onclick="importBox.value=''">Leeg importveld</button></div></section>
+</main>
+
+<div class="tools"><button id="bottom-now" onclick="tab('now')">Deze week</button><button id="bottom-finish" onclick="finishNext()">Afronden</button><button id="bottom-dashboard" onclick="tab('dashboard')">Dashboard</button></div>
+
+<script>
+const allSchedules={"hm_3_beginner":[{"week":1,"phase":"Basis","trainings":[{"label":"Training 1","name":"4 km rustig","km":4,"type":"easy"},{"label":"Training 2","name":"5 km rustig","km":5,"type":"easy"},{"label":"Lange duurloop","name":"6 km","km":6,"type":"long"}]},{"week":2,"phase":"Basis","trainings":[{"label":"Training 1","name":"4 km rustig","km":4,"type":"easy"},{"label":"Training 2","name":"5 km rustig","km":5,"type":"easy"},{"label":"Lange duurloop","name":"7 km","km":7,"type":"long"}]},{"week":3,"phase":"Basis","trainings":[{"label":"Training 1","name":"5 km rustig","km":5,"type":"easy"},{"label":"Training 2","name":"6 km rustig","km":6,"type":"easy"},{"label":"Lange duurloop","name":"8 km","km":8,"type":"long"}]},{"week":4,"phase":"Herstel","trainings":[{"label":"Training 1","name":"4 km herstel","km":4,"type":"recovery"},{"label":"Training 2","name":"5 km herstel","km":5,"type":"recovery"},{"label":"Lange duurloop","name":"6 km herstel","km":6,"type":"recovery"}]},{"week":5,"phase":"Basis","trainings":[{"label":"Training 1","name":"5 km rustig","km":5,"type":"easy"},{"label":"Training 2","name":"6 km rustig","km":6,"type":"easy"},{"label":"Lange duurloop","name":"9 km","km":9,"type":"long"}]},{"week":6,"phase":"Basis","trainings":[{"label":"Training 1","name":"5 km rustig","km":5,"type":"easy"},{"label":"Training 2","name":"7 km rustig","km":7,"type":"easy"},{"label":"Lange duurloop","name":"10 km","km":10,"type":"long"}]},{"week":7,"phase":"Basis","trainings":[{"label":"Training 1","name":"5 km rustig","km":5,"type":"easy"},{"label":"Training 2","name":"7 km steady","km":7,"type":"steady"},{"label":"Lange duurloop","name":"11 km","km":11,"type":"long"}]},{"week":8,"phase":"Basis","trainings":[{"label":"Training 1","name":"5 km rustig","km":5,"type":"easy"},{"label":"Training 2","name":"5 km test + in/uitlopen","km":7,"type":"race"},{"label":"Lange duurloop","name":"12 km rustig","km":12,"type":"long"}]},{"week":9,"phase":"Basis","trainings":[{"label":"Training 1","name":"6 km rustig","km":6,"type":"easy"},{"label":"Training 2","name":"8 km steady","km":8,"type":"steady"},{"label":"Lange duurloop","name":"13 km","km":13,"type":"long"}]},{"week":10,"phase":"Herstel","trainings":[{"label":"Training 1","name":"5 km herstel","km":5,"type":"recovery"},{"label":"Training 2","name":"6 km rustig","km":6,"type":"easy"},{"label":"Lange duurloop","name":"10 km herstel","km":10,"type":"recovery"}]},{"week":11,"phase":"Specifiek","trainings":[{"label":"Training 1","name":"6 km rustig","km":6,"type":"easy"},{"label":"Training 2","name":"8 km met vlot blok","km":8,"type":"tempo"},{"label":"Lange duurloop","name":"14 km","km":14,"type":"long"}]},{"week":12,"phase":"Specifiek","trainings":[{"label":"Training 1","name":"6 km rustig","km":6,"type":"easy"},{"label":"Training 2","name":"9 km met vlot blok","km":9,"type":"tempo"},{"label":"Lange duurloop","name":"15 km","km":15,"type":"long"}]},{"week":13,"phase":"Specifiek","trainings":[{"label":"Training 1","name":"7 km rustig","km":7,"type":"easy"},{"label":"Training 2","name":"9 km met vlot blok","km":9,"type":"tempo"},{"label":"Lange duurloop","name":"16 km","km":16,"type":"long"}]},{"week":14,"phase":"Herstel","trainings":[{"label":"Training 1","name":"5 km herstel","km":5,"type":"recovery"},{"label":"Training 2","name":"7 km rustig","km":7,"type":"easy"},{"label":"Lange duurloop","name":"12 km herstel","km":12,"type":"recovery"}]},{"week":15,"phase":"Specifiek","trainings":[{"label":"Training 1","name":"7 km rustig","km":7,"type":"easy"},{"label":"Training 2","name":"9 km HM-tempo blok","km":9,"type":"hm"},{"label":"Lange duurloop","name":"17 km progressief","km":17,"type":"long_progressive"}]},{"week":16,"phase":"Specifiek","trainings":[{"label":"Training 1","name":"6 km rustig","km":6,"type":"easy"},{"label":"Training 2","name":"10 km test gecontroleerd","km":10,"type":"race"},{"label":"Lange duurloop","name":"18 km rustig/progressief","km":18,"type":"long_progressive"}]},{"week":17,"phase":"Specifiek","trainings":[{"label":"Training 1","name":"6 km rustig","km":6,"type":"easy"},{"label":"Training 2","name":"8 km HM-tempo blokken","km":8,"type":"hm"},{"label":"Lange duurloop","name":"19 km progressief","km":19,"type":"long_progressive"}]},{"week":18,"phase":"Herstel","trainings":[{"label":"Training 1","name":"5 km herstel","km":5,"type":"recovery"},{"label":"Training 2","name":"7 km rustig","km":7,"type":"easy"},{"label":"Lange duurloop","name":"16 km herstel","km":16,"type":"recovery"}]},{"week":19,"phase":"Specifiek","trainings":[{"label":"Training 1","name":"6 km rustig","km":6,"type":"easy"},{"label":"Training 2","name":"8 km HM-tempo","km":8,"type":"hm"},{"label":"Lange duurloop","name":"20 km piek","km":20,"type":"long_progressive"}]},{"week":20,"phase":"Herstel","trainings":[{"label":"Training 1","name":"5 km rustig","km":5,"type":"easy"},{"label":"Training 2","name":"7 km met 3 km HM-tempo","km":7,"type":"hm"},{"label":"Lange duurloop","name":"14 km rustig","km":14,"type":"long"}]},{"week":21,"phase":"Herstel","trainings":[{"label":"Training 1","name":"4 km rustig","km":4,"type":"recovery"},{"label":"Training 2","name":"5 km met 2 km HM-tempo","km":5,"type":"hm"},{"label":"Lange duurloop","name":"10 km rustig","km":10,"type":"recovery"}]},{"week":22,"phase":"Raceweek","trainings":[{"label":"Training 1","name":"4 km loslopen","km":4,"type":"recovery"},{"label":"Training 2","name":"3 km loslopen + versnellingen","km":3,"type":"recovery"},{"label":"Lange duurloop","name":"21,1 km RACE","km":21.1,"type":"race"}]}],"10k_2_beginner":[{"week":1,"phase":"Basis","trainings":[{"label":"Training 1","name":"2.5 km rustig","km":2.5,"type":"easy"},{"label":"Training 2","name":"4 km rustig","km":4,"type":"long"}]},{"week":2,"phase":"Basis","trainings":[{"label":"Training 1","name":"3 km rustig","km":3.0,"type":"easy"},{"label":"Training 2","name":"4.5 km rustig","km":4.5,"type":"long"}]},{"week":3,"phase":"Basis","trainings":[{"label":"Training 1","name":"3.5 km rustig","km":3.5,"type":"easy"},{"label":"Training 2","name":"5 km rustig","km":5,"type":"long"}]},{"week":4,"phase":"Herstel","trainings":[{"label":"Training 1","name":"2.5 km rustig","km":2.5,"type":"recovery"},{"label":"Training 2","name":"4 km rustig","km":4,"type":"recovery"}]},{"week":5,"phase":"Basis","trainings":[{"label":"Training 1","name":"4 km rustig","km":4.0,"type":"easy"},{"label":"Training 2","name":"5.5 km rustig","km":5.5,"type":"long"}]},{"week":6,"phase":"Basis","trainings":[{"label":"Training 1","name":"4.5 km rustig","km":4.5,"type":"easy"},{"label":"Training 2","name":"6 km rustig","km":6,"type":"long"}]},{"week":7,"phase":"Opbouw","trainings":[{"label":"Training 1","name":"5 km rustig","km":5.0,"type":"easy"},{"label":"Training 2","name":"6.5 km rustig","km":6.5,"type":"long"}]},{"week":8,"phase":"Herstel","trainings":[{"label":"Training 1","name":"3.5 km rustig","km":3.5,"type":"recovery"},{"label":"Training 2","name":"5 km rustig","km":5,"type":"recovery"}]},{"week":9,"phase":"Opbouw","trainings":[{"label":"Training 1","name":"5.5 km rustig","km":5.5,"type":"easy"},{"label":"Training 2","name":"7 km rustig","km":7,"type":"long"}]},{"week":10,"phase":"Opbouw","trainings":[{"label":"Training 1","name":"6 km rustig","km":6,"type":"easy"},{"label":"Training 2","name":"8 km rustig","km":8,"type":"long"}]},{"week":11,"phase":"Herstel","trainings":[{"label":"Training 1","name":"4.5 km rustig","km":4.5,"type":"recovery"},{"label":"Training 2","name":"6 km rustig","km":6,"type":"recovery"}]},{"week":12,"phase":"Opbouw","trainings":[{"label":"Training 1","name":"6 km rustig","km":6,"type":"easy"},{"label":"Training 2","name":"9 km rustig","km":9,"type":"long"}]},{"week":13,"phase":"Testweek","trainings":[{"label":"Training 1","name":"6 km rustig","km":6,"type":"easy"},{"label":"Training 2","name":"10 km test","km":10,"type":"race"}]}],"10k_3_beginner":[{"week":1,"phase":"Basis","trainings":[{"label":"Training 1","name":"3 km rustig","km":3,"type":"easy"},{"label":"Training 2","name":"3 km rustig","km":3,"type":"easy"},{"label":"Lange duurloop","name":"4 km rustig","km":4,"type":"long"}]},{"week":2,"phase":"Basis","trainings":[{"label":"Training 1","name":"3 km rustig","km":3,"type":"easy"},{"label":"Training 2","name":"3.5 km rustig","km":3.5,"type":"easy"},{"label":"Lange duurloop","name":"5 km rustig","km":5,"type":"long"}]},{"week":3,"phase":"Basis","trainings":[{"label":"Training 1","name":"4 km rustig","km":4,"type":"easy"},{"label":"Training 2","name":"4.5 km rustig","km":4.5,"type":"easy"},{"label":"Lange duurloop","name":"6 km rustig","km":6,"type":"long"}]},{"week":4,"phase":"Herstel","trainings":[{"label":"Training 1","name":"3 km rustig","km":3,"type":"easy"},{"label":"Training 2","name":"3 km rustig","km":3,"type":"easy"},{"label":"Lange duurloop","name":"4.5 km rustig","km":4.5,"type":"recovery"}]},{"week":5,"phase":"Basis","trainings":[{"label":"Training 1","name":"4.5 km rustig","km":4.5,"type":"easy"},{"label":"Training 2","name":"5 km rustig","km":5.0,"type":"easy"},{"label":"Lange duurloop","name":"6.5 km rustig","km":6.5,"type":"long"}]},{"week":6,"phase":"Basis","trainings":[{"label":"Training 1","name":"5 km rustig","km":5,"type":"easy"},{"label":"Training 2","name":"5.5 km rustig","km":5.5,"type":"easy"},{"label":"Lange duurloop","name":"7 km rustig","km":7,"type":"long"}]},{"week":7,"phase":"Opbouw","trainings":[{"label":"Training 1","name":"5 km rustig","km":5,"type":"easy"},{"label":"Training 2","name":"6 km steady","km":6,"type":"steady"},{"label":"Lange duurloop","name":"8 km rustig","km":8,"type":"long"}]},{"week":8,"phase":"Herstel","trainings":[{"label":"Training 1","name":"4 km rustig","km":4,"type":"easy"},{"label":"Training 2","name":"4.5 km rustig","km":4.5,"type":"easy"},{"label":"Lange duurloop","name":"6 km rustig","km":6,"type":"recovery"}]},{"week":9,"phase":"Opbouw","trainings":[{"label":"Training 1","name":"5 km rustig","km":5,"type":"easy"},{"label":"Training 2","name":"6 km steady","km":6,"type":"steady"},{"label":"Lange duurloop","name":"8.5 km rustig","km":8.5,"type":"long"}]},{"week":10,"phase":"Opbouw","trainings":[{"label":"Training 1","name":"5 km rustig","km":5,"type":"easy"},{"label":"Training 2","name":"6 km steady","km":6,"type":"steady"},{"label":"Lange duurloop","name":"9 km rustig","km":9,"type":"long"}]},{"week":11,"phase":"Herstel","trainings":[{"label":"Training 1","name":"5 km rustig","km":5,"type":"easy"},{"label":"Training 2","name":"5.5 km rustig","km":5.5,"type":"easy"},{"label":"Lange duurloop","name":"7 km rustig","km":7,"type":"recovery"}]},{"week":12,"phase":"Opbouw","trainings":[{"label":"Training 1","name":"5 km rustig","km":5,"type":"easy"},{"label":"Training 2","name":"6 km steady","km":6,"type":"steady"},{"label":"Lange duurloop","name":"10 km rustig","km":10,"type":"long"}]},{"week":13,"phase":"Opbouw","trainings":[{"label":"Training 1","name":"5 km rustig","km":5,"type":"easy"},{"label":"Training 2","name":"6 km steady","km":6,"type":"steady"},{"label":"Lange duurloop","name":"8 km rustig","km":8,"type":"long"}]},{"week":14,"phase":"Testweek","trainings":[{"label":"Training 1","name":"5 km rustig","km":5,"type":"easy"},{"label":"Training 2","name":"10 km test","km":10,"type":"race"},{"label":"Lange duurloop","name":"10 km rustig","km":10,"type":"long"}]}],"5k_2_beginner":[{"week":1,"phase":"Basis","trainings":[{"label":"Training 1","name":"2 km rustig","km":2,"type":"easy"},{"label":"Training 2","name":"3 km rustig","km":3,"type":"long"}]},{"week":2,"phase":"Basis","trainings":[{"label":"Training 1","name":"2.5 km rustig","km":2.5,"type":"easy"},{"label":"Training 2","name":"3.5 km rustig","km":3.5,"type":"long"}]},{"week":3,"phase":"Basis","trainings":[{"label":"Training 1","name":"3 km rustig","km":3,"type":"easy"},{"label":"Training 2","name":"4 km rustig","km":4,"type":"long"}]},{"week":4,"phase":"Herstel","trainings":[{"label":"Training 1","name":"2.5 km rustig","km":2.5,"type":"recovery"},{"label":"Training 2","name":"3 km rustig","km":3,"type":"recovery"}]},{"week":5,"phase":"Basis","trainings":[{"label":"Training 1","name":"3.5 km rustig","km":3.5,"type":"easy"},{"label":"Training 2","name":"4.5 km rustig","km":4.5,"type":"long"}]},{"week":6,"phase":"Basis","trainings":[{"label":"Training 1","name":"4 km rustig","km":4,"type":"easy"},{"label":"Training 2","name":"5 km rustig","km":5,"type":"long"}]},{"week":7,"phase":"Herstel","trainings":[{"label":"Training 1","name":"3 km rustig","km":3,"type":"recovery"},{"label":"Training 2","name":"4 km rustig","km":4,"type":"recovery"}]},{"week":8,"phase":"Basis","trainings":[{"label":"Training 1","name":"4 km rustig","km":4,"type":"easy"},{"label":"Training 2","name":"5.5 km rustig","km":5.5,"type":"long"}]},{"week":9,"phase":"Basis","trainings":[{"label":"Training 1","name":"4.5 km rustig","km":4.5,"type":"easy"},{"label":"Training 2","name":"6 km rustig","km":6,"type":"long"}]},{"week":10,"phase":"Herstel","trainings":[{"label":"Training 1","name":"3 km rustig","km":3,"type":"recovery"},{"label":"Training 2","name":"4 km rustig","km":4,"type":"recovery"}]},{"week":11,"phase":"Testweek","trainings":[{"label":"Training 1","name":"3 km rustig","km":3,"type":"easy"},{"label":"Training 2","name":"5 km test","km":5,"type":"race"}]}]};
+let weeks=allSchedules.hm_3_beginner;
+let raceDate=new Date('2026-11-08T09:00:00+01:00');
+const startDate=new Date('2026-06-08T00:00:00+02:00');
+const defaultPaces={easy:[465,525],steady:[435,495],tempo:[385,420],hm:[385,400],long:[480,540],recovery:[495,555],long_progressive:[450,510],race:[370,384]};
+
+function defaultProfile(){
+ return {name:'',age:28,gender:'Man',raceDate:'2026-11-08',distance:'hm',trainingsPerWeek:'3',goalTime:'2:15:00',fiveK:'29:00',maxHr:'',level:'beginner',goalType:'time'};
+}
+function hasProfile(){return localStorage.getItem('hm4-profile-complete')==='1'}
+function getProfile(){
+ try{return Object.assign(defaultProfile(),JSON.parse(localStorage.getItem('hm4-profile')||'{}'))}catch(e){return defaultProfile()}
+}
+function fillOnboardingDefaults(){
+ let p=getProfile();
+ onName.value=p.name||''; onAge.value=p.age||28; onGender.value=p.gender||'Man'; onRaceDate.value=p.raceDate||'2026-11-08'; onDistance.value=p.distance||'hm'; onTrainingsPerWeek.value=p.trainingsPerWeek||'3'; onGoalTime.value=p.goalTime||defaultGoalTime(p.distance||'hm'); onFiveK.value=p.fiveK||'29:00'; onMaxHr.value=p.maxHr||''; onLevel.value=p.level||'beginner'; onGoalType.value=p.goalType||'time';
+}
+function showOnboardingIfNeeded(){
+ if(hasProfile()){onboarding.classList.add('hidden');return}
+ fillOnboardingDefaults();
+ onboarding.classList.remove('hidden');
+}
+function completeOnboarding(){
+ let p={name:onName.value.trim()||'Loper',age:+onAge.value||28,gender:onGender.value,raceDate:onRaceDate.value||'2026-11-08',distance:onDistance.value,trainingsPerWeek:onTrainingsPerWeek.value,goalTime:onGoalTime.value.trim()||defaultGoalTime(onDistance.value),fiveK:onFiveK.value.trim()||'29:00',maxHr:onMaxHr.value?+onMaxHr.value:'',level:onLevel.value,goalType:onGoalType.value};
+ localStorage.setItem('hm4-profile',JSON.stringify(p));
+ localStorage.setItem('hm4-profile-complete','1');
+ onboarding.classList.add('hidden');
+ applyProfile(); renderPlan(); loadProfileForm(); update();
+ tab('dashboard');
+}
+function saveProfile(){
+ let p={name:setName.value.trim()||'Loper',age:+setAge.value||28,gender:setGender.value,raceDate:setRaceDate.value||'2026-11-08',distance:setDistance.value,trainingsPerWeek:setTrainingsPerWeek.value,goalTime:setGoalTime.value.trim()||defaultGoalTime(setDistance.value),fiveK:setFiveK.value.trim()||'',maxHr:setMaxHr.value?+setMaxHr.value:'',level:setLevel.value,goalType:setGoalType.value};
+ localStorage.setItem('hm4-profile',JSON.stringify(p));
+ localStorage.setItem('hm4-profile-complete','1');
+ applyProfile(); renderPlan(); update();
+ alert('Profiel opgeslagen.');
+}
+function loadProfileForm(){
+ let p=getProfile();
+ if(!document.getElementById('setName'))return;
+ setName.value=p.name; setAge.value=p.age; setGender.value=p.gender; setRaceDate.value=p.raceDate; setDistance.value=p.distance||'hm'; setTrainingsPerWeek.value=p.trainingsPerWeek||'3'; setGoalTime.value=p.goalTime; setFiveK.value=p.fiveK||''; setMaxHr.value=p.maxHr||''; setLevel.value=p.level; setGoalType.value=p.goalType;
+ updateProfileSummary();
+}
+
+function defaultGoalTime(distance){return distance==='5k'?'35:00':distance==='10k'?'1:10:00':'2:15:00'}
+function raceDistanceKm(){let d=getProfile().distance;return d==='5k'?5:d==='10k'?10:21.0975}
+function distanceLabel(){let d=getProfile().distance;return d==='5k'?'5 km':d==='10k'?'10 km':'Halve marathon'}
+function scheduleKey(){let p=getProfile();if(p.distance==='5k')return '5k_2_beginner';if(p.distance==='10k')return p.trainingsPerWeek==='3'?'10k_3_beginner':'10k_2_beginner';return 'hm_3_beginner'}
+function applySchedule(){weeks=allSchedules[scheduleKey()]||allSchedules.hm_3_beginner}
+function syncGoalPlaceholder(prefix){let d=document.getElementById(prefix+'Distance')?.value||'hm';let input=document.getElementById(prefix+'GoalTime');if(input)input.placeholder=defaultGoalTime(d)}
+
+function timeToSeconds(t){return parseTime(t)}
+function goalPaceSec(){let p=getProfile(), s=timeToSeconds(p.goalTime); return s?s/raceDistanceKm():384}
+function maxHr(){let p=getProfile(); return p.maxHr||Math.max(160,220-(+p.age||28))}
+function profileZones(){
+ let m=maxHr(); return {z1:[Math.round(m*.50),Math.round(m*.60)],z2:[Math.round(m*.60),Math.round(m*.75)],z3:[Math.round(m*.75),Math.round(m*.85)],z4:[Math.round(m*.85),Math.round(m*.92)]};
+}
+function formatDateNL(d){return new Date(d+'T09:00:00').toLocaleDateString('nl-NL',{day:'numeric',month:'long',year:'numeric'})}
+function applyProfile(){
+ let p=getProfile(); applySchedule(); raceDate=new Date(p.raceDate+'T09:00:00+01:00');
+ let gp=goalPaceSec();
+ heroTitle.textContent='Run Coach';
+ profileHero.textContent=p.name?`Voor ${p.name} · ${distanceLabel()} · doel ${p.goalTime} · ${formatDateNL(p.raceDate)}`:`${distanceLabel()} · doel ${p.goalTime} · ${formatDateNL(p.raceDate)}`; let rcl=document.getElementById('raceCountdownLabel'); if(rcl)rcl.textContent='Tot '+new Date(p.raceDate+'T09:00:00').toLocaleDateString('nl-NL',{day:'numeric',month:'short'});
+ if(document.getElementById('profileAge')){profileAge.textContent=p.age+' jaar';profileGender.textContent=p.gender;profileGoal.textContent=p.goalTime;profileGoalPace.textContent=secToPace(gp);profileRaceDate.textContent=formatDateNL(p.raceDate);profileDistance.textContent=distanceLabel();profileTrainingDays.textContent=p.trainingsPerWeek==='2'?'2x per week':'3x per week';}
+ updateProfileSummary();
+ updateZoneText();
+}
+function updateProfileSummary(){
+ if(!document.getElementById('profileSummary'))return;
+ let p=getProfile(); let z=profileZones();
+ profileSummary.innerHTML=`<b>${p.name||'Loper'}</b> · ${distanceLabel()} · ${p.age} jaar · doel ${p.goalTime} (${secToPace(goalPaceSec())})<br>Geschatte HFmax: ${maxHr()} bpm · Zone 2: ${z.z2[0]}-${z.z2[1]} bpm`;
+}
+function updateZoneText(){
+ let z=profileZones();
+ document.querySelectorAll('.zone').forEach((el,i)=>{let b=el.querySelector('b'); if(!b)return; let key=['z1','z2','z3','z4'][i]; if(z[key]){let label=b.textContent; el.innerHTML=`<b>${label}</b>${z[key][0]}-${z[key][1]} bpm<br><span class="muted">${i===0?'herstel':i===1?'duurvermogen':i===2?'steady':'tempo'}</span>`}})
+}
+
+let editingLogIndex=null, plannedContext=null;
+
+function secToPace(s){s=Math.round(s);return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}/km`}
+function range(a){return `${secToPace(a[0])} - ${secToPace(a[1])}`}
+function parseTime(str){if(!str)return 0;let p=String(str).trim().split(':').map(Number);if(p.length===2)return p[0]*60+p[1];if(p.length===3)return p[0]*3600+p[1]*60+p[2];return Number(str)||0}
+function logs(){return JSON.parse(localStorage.getItem('hm4-logs')||'[]')} function setLogs(x){localStorage.setItem('hm4-logs',JSON.stringify(x))}
+function k(w,i){return `hm4-w${w}-t${i}`} function nkey(w){return `hm4-note-${w}`}
+function currentWeek(){return Math.min(22,Math.max(1,Math.floor((new Date()-startDate)/(7*24*3600*1000))+1))}
+function currentWeekObj(){return weeks[currentWeek()-1]}
+function daysToRace(){return Math.max(0,Math.ceil((raceDate-new Date())/(24*3600*1000)))}
+function trainingDayLabel(i){return i===0?'Dinsdag':i===1?'Donderdag':'Zaterdag/Zondag'}
+function nextTrainingDateObj(index){
+ let now=new Date();
+ let targets=index===0?[2]:index===1?[4]:[6,0]; // dinsdag, donderdag, weekend
+ let bestAdd=99;
+ for(const target of targets){
+   let add=(target-now.getDay()+7)%7;
+   if(add===0 && now.getHours()>=20)add=7;
+   if(add<bestAdd)bestAdd=add;
+ }
+ let d=new Date(now); d.setHours(7,0,0,0); d.setDate(now.getDate()+bestAdd);
+ return {date:d,days:bestAdd};
+}
+function nextTrainingDate(index){
+ let obj=nextTrainingDateObj(index);
+ if(obj.days===0)return 'Vandaag';
+ if(obj.days===1)return 'Morgen';
+ return obj.date.toLocaleDateString('nl-NL',{weekday:'short',day:'numeric',month:'short'});
+}
+function plannedDayText(week,index){return trainingDayLabel(index)+' · '+nextTrainingDate(index)}
+function nextPlanned(){
+ let cw=currentWeek();
+ let day=new Date().getDay();
+ let order=day<=2?[0,1,2]:day<=4?[1,2,0]:[2,0,1];
+ for(const i of order){
+   if(!localStorage.getItem(k(cw,i)))return {week:cw,index:i,t:weeks[cw-1].trainings[i]};
+ }
+ for(let w=cw+1; w<=weeks.length; w++){
+   for(let i=0;i<weeks[w-1].trainings.length;i++){
+     if(!localStorage.getItem(k(w,i)))return {week:w,index:i,t:weeks[w-1].trainings[i]};
+   }
+ }
+ return {week:22,index:2,t:weeks[21].trainings[2]};
+}
+function model(){
+ let l=logs().filter(r=>r.km>0&&parseTime(r.time)>0), recent=l.slice(0,8);
+ let easy=recent.filter(r=>(r.type==='easy'||r.type==='long'||r.type==='recovery')&&r.hr&&r.hr<=148&&(+r.rpe||5)<=6);
+ let race=l.filter(r=>r.type==='race'||r.type==='tempo'||r.type==='hm');
+ let base=defaultPaces.easy[0]+30;
+ if(easy.length){base=easy.reduce((a,r)=>a+parseTime(r.time)/r.km,0)/easy.length;}
+ let stress=0; recent.forEach(r=>{if(r.hr>160)stress+=1;if((+r.rpe||0)>=8)stress+=1;if(r.recovery==='vermoeid')stress+=1.2;if(r.hr<145&&(+r.rpe||5)<=5)stress-=0.4});
+ let adj=stress>2?20:stress<-1?-15:0; let easyMid=base+adj;
+ let paces={easy:[easyMid-20,easyMid+35],recovery:[easyMid+20,easyMid+70],long:[easyMid+10,easyMid+55],steady:[easyMid-45,easyMid+5],tempo:[Math.max(385,easyMid-95),Math.max(410,easyMid-65)],hm:[Math.max(380,easyMid-105),Math.max(400,easyMid-80)],long_progressive:[easyMid,easyMid+45],race:[370,384]};
+ let predSec=0, confidence='laag';
+ if(race.length){let best=race.map(r=>{let t=parseTime(r.time), d=r.km;return t*Math.pow(raceDistanceKm()/d,1.06)}).sort((a,b)=>a-b)[0]; predSec=best; confidence=race.length>=3?'hoog':'middel'}
+ else if(easy.length){let improvement=easy.length>=4?65:45;predSec=(easyMid-improvement)*raceDistanceKm(); confidence=easy.length>=4?'middel':'laag'}
+ return {paces,predSec,confidence,stress,recent};
+}
+function predText(sec){if(!sec)return 'Nog niet genoeg data';let h=Math.floor(sec/3600),m=Math.floor((sec%3600)/60),s=Math.round(sec%60);return `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`}
+function coachReady(){return logs().filter(r=>r.km>0&&parseTime(r.time)>0).length>=3}
+function basePace(type){
+ let gp=goalPaceSec();
+ if(type==='hm')return [Math.round(gp),Math.round(gp+15)];
+ if(type==='race')return [Math.round(gp-10),Math.round(gp)];
+ return defaultPaces[type]||defaultPaces.easy;
+}
+function basePace(type){let gp=goalPaceSec();if(type==='hm')return [Math.round(gp),Math.round(gp+15)];if(type==='race')return [Math.round(gp-10),Math.round(gp)];return defaultPaces[type]||defaultPaces.easy}
+function recFor(type){return range(adjustedPace(type))}
+function paceChanged(type){if(!coachReady())return false; let m=adjustedPace(type); let d=basePace(type); return Math.abs(m[0]-d[0])>=10 || Math.abs(m[1]-d[1])>=10}
+function paceDeltaInfo(type){
+ let d=basePace(type);
+ if(!coachReady())return {cls:'same',txt:'Nog basisschema · log 3 trainingen voor persoonlijke tempo’s',diff:0};
+ let m=adjustedPace(type);
+ let mid=(m[0]+m[1])/2, base=(d[0]+d[1])/2;
+ let diff=Math.round(base-mid);
+ if(Math.abs(diff)<10)return {cls:'same',txt:'Geen duidelijke wijziging t.o.v. basisschema',diff:0};
+ if(diff>0)return {cls:'fast',txt:`Coach maakt dit ${diff} sec/km sneller`,diff};
+ return {cls:'slow',txt:`Coach maakt dit ${Math.abs(diff)} sec/km rustiger`,diff};
+}
+function changeText(type){return paceDeltaInfo(type).txt}
+function adjustmentPolicy(type){
+ if(type==='recovery')return {mode:'locked',label:'Niet aanpassen',reason:'Hersteltraining blijft bewust rustig. Doel = fris worden, niet sneller lopen.'};
+ if(type==='race')return {mode:'locked',label:'Raceplan',reason:'Race heeft een vast richttempo. De coach gebruikt je logs voor voorspelling, maar verandert dit niet agressief.'};
+ if(type==='hm'||type==='tempo')return {mode:'cautious',label:'Voorzichtig aanpassen',reason:'Tempo- en HM-blokken worden beperkt aangepast om overbelasting te voorkomen.'};
+ if(type==='long_progressive'||type==='long')return {mode:'normal',label:'Aanpassen indien logisch',reason:'Lange duurlopen mogen licht meebewegen, maar blijven grotendeels aerobe trainingen.'};
+ return {mode:'normal',label:'Aanpassen toegestaan',reason:'Rustige en steady trainingen bewegen mee met je actuele fitheid.'};
+}
+function adjustedPace(type){
+ let base=basePace(type);
+ if(!coachReady())return base;
+ let raw=model().paces[type]||base, policy=adjustmentPolicy(type);
+ if(policy.mode==='locked')return base;
+ if(policy.mode==='cautious'){
+   return raw.map((v,i)=>{
+     let diff=v-base[i];
+     let cap=18;
+     if(diff>cap)diff=cap;
+     if(diff<-cap)diff=-cap;
+     return base[i]+diff;
+   });
+ }
+ return raw;
+}
+function coachReason(type){
+ let count=logs().filter(r=>r.km>0&&parseTime(r.time)>0).length;
+ let policy=adjustmentPolicy(type);
+ if(!coachReady())return `⏳ Nog geen persoonlijke aanpassing. ${count}/3 trainingen gelogd.`;
+ let relevant=logs().filter(r=>r.km>0&&parseTime(r.time)>0&&(r.type===type||(['easy','long','recovery'].includes(r.type)&&['easy','long','recovery'].includes(type)))).length;
+ let z2=logs().filter(r=>(r.type==='easy'||r.type==='long'||r.type==='recovery')&&r.hr&&r.hr<=profileZones().z2[1]+3&&r.km&&parseTime(r.time)).length;
+ let load=trainingLoad().score;
+ let bits=[`<b>${policy.label}</b>: ${policy.reason}`];
+ if(z2>=2)bits.push(`Zone 2-data gebruikt: ${z2} trainingen.`);
+ if(relevant)bits.push(`Relevante logs voor dit type: ${relevant}.`);
+ if(load>=90)bits.push('Belasting is hoog, dus de coach wordt conservatiever.');
+ return bits.join('<br>');
+}
+
+function hrFor(type){let z=profileZones();return type==='recovery'?`${z.z1[1]}-${z.z2[0]+10} bpm`:type==='easy'||type==='long'?`${z.z2[0]}-${z.z2[1]} bpm`:type==='steady'?`${z.z2[1]-10}-${z.z3[1]} bpm`:type==='tempo'||type==='hm'?`${z.z3[0]}-${z.z4[0]} bpm`:type==='race'?`${z.z3[0]}-${z.z4[1]} bpm`:`${z.z2[0]}-${z.z2[1]} bpm`}
+function fuelFor(type,km){if(type==='race')return 'Gel rond 45 en 90 min'; if(km>=16)return '1-2 gels oefenen'; if(km>=12)return '1 gel oefenen'; return 'Water'}
+function badge(p){return `<span class="badge ${p}">${p}</span>`}
+function wHtml(w){return `<section class="card"><div class="weekHead"><h2>Week ${w.week}</h2>${badge(w.phase)}</div>${w.trainings.map((t,i)=>{let ch=paceChanged(t.type), done=localStorage.getItem(k(w.week,i))==='1', d=paceDeltaInfo(t.type), base=range(basePace(t.type));return `<div class="workout"><input type="checkbox" id="${k(w.week,i)}"><div><div class="wtitle">${trainingDayLabel(i)} · ${t.label}: ${t.name}</div><div class="details">Type: ${t.type}<br>Hartslag: ${hrFor(t.type)}<br><span class="fuel">Voeding: ${fuelFor(t.type,t.km)}</span></div><div class="recommend ${ch?'changed':'same'}"><span class="coachLabel ${ch?'':'same'}">${ch?'COACH AANGEPAST':'BASISSCHEMA'}</span><div class="paceCompare"><div class="paceBox"><span class="muted">Basis</span><b>${base}</b></div><div class="paceBox"><span class="muted">Nu</span><b>${recFor(t.type)}</b></div></div><div class="paceDelta ${d.cls}">${d.cls==='fast'?'⬆️ Sneller':d.cls==='slow'?'⬇️ Rustiger':'● Geen wijziging'} · ${d.txt}</div><div class="coachReason">${coachReason(t.type)}</div></div><div class="actions"><button class="finish" onclick="finishWorkout(${w.week},${i})">${done?'Opnieuw loggen':'Training afronden'}</button></div></div></div>`}).join('')}<textarea data-w="${w.week}" placeholder="Weeknotities...">${localStorage.getItem(nkey(w.week))||''}</textarea></section>`}
+function renderPlan(){plan.innerHTML=weeks.map(wHtml).join(''); now.innerHTML=wHtml(currentWeekObj()); bind(); update();}
+function bind(){document.querySelectorAll('input[type=checkbox]').forEach(c=>{c.checked=localStorage.getItem(c.id)==='1';c.onchange=()=>{localStorage.setItem(c.id,c.checked?'1':'0');update()}});document.querySelectorAll('textarea[data-w]').forEach(t=>t.oninput=()=>localStorage.setItem(nkey(t.dataset.w),t.value))}
+function finishWorkout(w,i){let obj=weeks[w-1].trainings[i];plannedContext={week:w,index:i};logTitle.textContent=`Training afronden: ${trainingDayLabel(i)} · week ${w} - ${obj.label}`;logType.value=obj.type;logKm.value=obj.km;logDate.value=new Date().toISOString().slice(0,10);logTime.value='';logHr.value='';logRpe.value='';logRecovery.value='';logNote.value=obj.name;updatePacePreview();tab('log');let bf=document.getElementById('bottom-finish');if(bf)bf.classList.add('active')}
+function finishNext(){let n=nextPlanned();finishWorkout(n.week,n.index)}
+function typeHelpText(type){const map={easy:'Rustig = gewone Zone 2 duurloop. Kies dit voor korte rustige trainingen waarbij je nog kunt praten.',steady:'Steady = iets vlotter dan rustig, maar nog gecontroleerd.',tempo:'Tempo = zwaardere training met vlotte blokken.',hm:'HM-tempo = blokken rond je beoogde halve-marathontempo.',long:'Lange duurloop = je langste training van de week. Meestal rustig.',long_progressive:'Progressieve lange duurloop = rustig starten en gecontroleerd sneller eindigen.',recovery:'Herstel = bewust rustig, lage hartslag, fris worden.',race:'Race/test = 5 km test, 10 km test of wedstrijd. Telt zwaar mee voor voorspelling.'};return map[type]||map.easy}
+function trainingAnalysis(item){let km=+item.km||0, sec=parseTime(item.time), hr=+item.hr||0, rpe=+item.rpe||0, type=item.type||'easy'; if(!km||!sec)return 'Geen analyse: afstand of tijd ontbreekt.'; let pace=sec/km, rec=adjustedPace(type); let mid=(rec[0]+rec[1])/2, diff=Math.round(pace-mid); let parts=[]; if(diff<-20)parts.push('sneller dan coachadvies'); else if(diff>25)parts.push('rustiger dan coachadvies'); else parts.push('binnen coachadvies'); if((type==='easy'||type==='long'||type==='recovery')&&hr>150)parts.push('hartslag hoog voor rustig'); if(hr&&hr<145&&(type==='easy'||type==='long'))parts.push('hartslag goed voor Zone 2'); if(rpe>=8)parts.push('zwaar gevoel'); if(rpe&&rpe<=5)parts.push('goed controleerbaar'); return parts.join(' · ')}
+function updatePacePreview(){if(!document.getElementById('logType'))return;typeHelp.textContent=typeHelpText(logType.value);let km=+logKm.value||0, sec=parseTime(logTime.value), hr=+logHr.value||0, rpe=+logRpe.value||0, type=logType.value;let box=pacePreview; box.className='pacePreview'; if(!km||!sec){box.textContent='Vul afstand en tijd in om je gemiddelde tempo te zien.';return} let pace=sec/km, rec=adjustedPace(type), mid=(rec[0]+rec[1])/2; let diff=Math.round(pace-mid); let status='Binnen coachadvies'; box.classList.add('goodbox'); if(diff<-20){status='Sneller dan aanbevolen'; box.className='pacePreview warnbox'} if(diff<-45){status='Veel te snel voor dit type'; box.className='pacePreview badbox'} if(diff>30){status='Rustiger dan aanbevolen'; box.className='pacePreview warnbox'} if((type==='easy'||type==='long'||type==='recovery')&&hr>150){status+=' · HR hoog voor rustig'; box.className='pacePreview badbox'} if(rpe>=8){status+=' · voelt zwaar'; if(!box.classList.contains('badbox'))box.className='pacePreview warnbox'} box.innerHTML=`Gemiddeld tempo: <b>${secToPace(pace)}</b><br><span class="muted">Coachadvies voor ${type}: ${range(rec)}<br>${status}</span>`}
+function clearLogForm(){logTitle.textContent='Training loggen';logKm.value=logTime.value=logHr.value=logNote.value='';logRpe.value='';logRecovery.value='';editingLogIndex=null;plannedContext=null;document.querySelector('#log .smallbtn').textContent='Opslaan & tempo aanpassen';updatePacePreview()}
+function addLog(){let x=logs();let item={type:logType.value,date:logDate.value||new Date().toISOString().slice(0,10),km:+logKm.value||0,time:logTime.value,hr:+logHr.value||0,rpe:logRpe.value,recovery:logRecovery.value,note:logNote.value,planned:plannedContext};item.analysis=trainingAnalysis(item); if(editingLogIndex!==null){x[editingLogIndex]=item}else{x.unshift(item)} setLogs(x); if(plannedContext)localStorage.setItem(k(plannedContext.week,plannedContext.index),'1'); clearLogForm();renderPlan();tab('coach')}
+function editLog(i){let r=logs()[i];editingLogIndex=i;plannedContext=r.planned||null;logTitle.textContent='Training wijzigen';logType.value=r.type||'easy';logDate.value=r.date||new Date().toISOString().slice(0,10);logKm.value=r.km||'';logTime.value=r.time||'';logHr.value=r.hr||'';logRpe.value=r.rpe||'';logRecovery.value=r.recovery||'';logNote.value=r.note||'';document.querySelector('#log .smallbtn').textContent='Wijziging opslaan';updatePacePreview();tab('log')}
+function deleteLog(i){if(!confirm('Deze gelogde training verwijderen?'))return;let x=logs();x.splice(i,1);setLogs(x);renderPlan();tab('log')}
+function update(){let done=0,km=0,total=weeks.length*3;weeks.forEach(w=>w.trainings.forEach((t,i)=>{if(localStorage.getItem(k(w.week,i))==='1'){done++;km+=t.km}}));let pct=Math.round(done/total*100);fill.style.width=pct+'%';doneText.textContent=`${done} van ${total} trainingen · ${Math.round(km)} km gepland voltooid`;let n=nextPlanned();weekTop.textContent='Week '+currentWeek();daysTop.textContent=daysToRace();predictionTop.textContent=coachReady()?predText(model().predSec):'—';renderCoachStatus();renderCoach();renderLogs();renderStats();renderDashboard();drawZ2();}
+function renderCoachStatus(){let count=logs().filter(r=>r.km>0&&parseTime(r.time)>0).length;let ready=coachReady();coachStatus.className='coachStatus '+(ready?'active':'');coachStatus.textContent=ready?'✅ Persoonlijke tempo’s actief':'⏳ Nog onvoldoende data';coachStatusText.textContent=ready?`Gebaseerd op ${count} gelogde trainingen. Tempo’s kunnen nu zichtbaar afwijken van het basisschema.`:`${count} van 3 trainingen gelogd. Tot die tijd gebruikt de app het basisschema.`}
+function renderDashboard(){let n=nextPlanned();nextWorkout.innerHTML=`<div class="wtitle">${trainingDayLabel(n.index)} · Week ${n.week} · ${n.t.label}: ${n.t.name}</div><div class="details">Geplande dag: ${plannedDayText(n.week,n.index)}<br>Tempo: ${recFor(n.t.type)}<br>Hartslag: ${hrFor(n.t.type)}<br><span class="fuel">Voeding: ${fuelFor(n.t.type,n.t.km)}</span></div><div class="actions"><button class="finish" onclick="finishWorkout(${n.week},${n.index})">Deze training afronden</button></div>`;let load=trainingLoad();loadScore.textContent=load.score+'/100';loadFill.style.width=Math.min(100,load.score)+'%';loadFill.className='fill '+(load.score>=90?'red':load.score>=70?'orange':'');recoveryScore.innerHTML=load.recovery;loadText.textContent=`Laatste 7 dagen: ${load.km.toFixed(1)} km van ongeveer ${load.planned.toFixed(1)} km gepland. Groen <70, oranje 70-89, rood 90+.`;fitnessScore.textContent=fitnessScoreCalc()+'/100';let tr=trendCalc();trendText.textContent=tr.label;volumeSuggestion.textContent=longRunSuggestion();dashboardAdvice.innerHTML=virtualCoach(load)}
+function plannedWeekKm(){
+ let w=currentWeekObj();
+ return w.trainings.reduce((a,t)=>a+(+t.km||0),0)||20;
+}
+function trainingLoad(){
+ let now=Date.now();
+ let l=logs().filter(r=>new Date(r.date).getTime()>now-7*24*3600*1000);
+ let km=l.reduce((a,r)=>a+(+r.km||0),0);
+ let planned=plannedWeekKm();
+ let volumeScore=Math.min(75,(km/planned)*55);
+ let intensityPenalty=0;
+ l.forEach(r=>{
+   let rpe=+r.rpe||5, hr=+r.hr||0;
+   if(rpe>=8)intensityPenalty+=8;
+   else if(rpe>=7)intensityPenalty+=4;
+   if(hr>=170)intensityPenalty+=6;
+   else if(hr>=160)intensityPenalty+=3;
+   if(r.type==='race'||r.type==='tempo'||r.type==='hm')intensityPenalty+=3;
+   if(r.recovery==='vermoeid')intensityPenalty+=8;
+   else if(r.recovery==='normaal')intensityPenalty+=2;
+ });
+ let score=Math.round(Math.min(100,volumeScore+intensityPenalty));
+ let recovery=score>=90?'<span class="danger">Rood</span>':score>=70?'<span class="warn">Oranje</span>':'<span class="good">Groen</span>';
+ return {score,recovery,km,planned};
+}
+function fitnessScoreCalc(){
+ let z=z2Data(), l=logs().filter(r=>r.km&&parseTime(r.time));
+ if(!l.length)return 0;
+ let longest=Math.max(0,...l.map(r=>+r.km||0));
+ let consistency=Math.min(30,l.slice(0,12).length*2.5);
+ let endurance=Math.min(30,(longest/20)*30);
+ let z2score=10;
+ if(z.length){
+   let recent=z.slice(-3).reduce((a,b)=>a+b.pace,0)/Math.min(3,z.length);
+   z2score=Math.max(10,Math.min(30,30-((recent-390)/180)*20));
+ }
+ let tests=l.filter(r=>r.type==='race'||r.type==='tempo'||r.type==='hm').length?10:0;
+ return Math.round(Math.max(0,Math.min(100,consistency+endurance+z2score+tests)));
+}
+function trendCalc(){
+ let z=z2Data();
+ if(z.length<3)return {label:'Nog te weinig data',diff:0};
+ let first=z.slice(0,Math.min(3,z.length)).reduce((a,b)=>a+b.pace,0)/Math.min(3,z.length);
+ let last=z.slice(-3).reduce((a,b)=>a+b.pace,0)/Math.min(3,z.length);
+ let diff=Math.round(first-last);
+ if(Math.abs(diff)<8)return {label:'stabiel',diff};
+ return {label:diff>0?`+${diff} sec/km sneller`:`${Math.abs(diff)} sec/km langzamer`,diff};
+}
+function longRunSuggestion(){
+ let l=logs(), load=trainingLoad(), recentLong=l.filter(r=>(r.type==='long'||r.type==='long_progressive'||r.km>=10)).slice(0,4);
+ let n=nextPlanned();
+ if(!n.t || !(n.t.type==='long'||n.t.type==='long_progressive'||n.index===2))return 'Volumeadvies verschijnt vooral bij je lange duurloop.';
+ if(!recentLong.length)return 'Log eerst 1-2 lange duurlopen voordat de coach kilometers gaat adviseren.';
+ let last=recentLong[0], planned=n.t.km, txt=`Gepland: ${planned} km. `;
+ if(load.score>=90)return txt+'Advies: verkort met 2 km of loop volledig rustig door hoge belasting.';
+ if(last.km>=planned-1 && (+last.rpe||5)<=5 && last.hr && last.hr<=148)return txt+`Advies: je mag eventueel +1 km doen (${planned+1} km), maar alleen als je fris bent.`;
+ if((+last.rpe||5)>=8 || last.recovery==='vermoeid')return txt+'Advies: houd geplande afstand aan of verkort 1-2 km.';
+ return txt+'Advies: houd de geplande afstand aan. Consistentie is belangrijker dan extra kilometers.';
+}
+
+function virtualCoach(load){let m=model(), l=logs(), last=l[0];let parts=[];if(!l.length)parts.push('Log je eerste 2-3 trainingen. Daarna worden tempo’s en voorspelling persoonlijker.');else{if(load.score>=90)parts.push('<span class="danger">Belasting is hoog.</span> Maak de volgende training rustiger of neem extra herstel.');else if(load.score>=70)parts.push('<span class="warn">Belasting is redelijk hoog.</span> Houd je rustige trainingen echt in Zone 2.');else parts.push('<span class="good">Belasting ziet er goed uit.</span> Consistent blijven is nu belangrijker dan harder trainen.');if(last&&last.hr>150&&(last.type==='easy'||last.type==='long'))parts.push('Laatste rustige training had een hoge hartslag: loop de volgende easy run langzamer.');if(coachReady()&&m.predSec){parts.push(`Huidige HM-indicatie: <b>${predText(m.predSec)}</b> met betrouwbaarheid: ${m.confidence}.`);if(!l.some(r=>r.type==='race'||r.type==='tempo'||r.type==='hm'))parts.push('Voor een betere voorspelling: log de geplande 5 km-test (week 8) en 10 km-test (week 16).')}else parts.push('Persoonlijke voorspelling start na 3 gelogde trainingen.')}return parts.map(x=>`<p>${x}</p>`).join('')}
+function renderCoach(){let m=model();easyPace.textContent=recFor('easy');steadyPace.textContent=recFor('steady');tempoPace.textContent=recFor('hm');longPace.textContent=recFor('long');predictionText.textContent=coachReady()?`Geschatte eindtijd: ${predText(m.predSec)}. Betrouwbaarheid: ${m.confidence}. Zonder race/testdata blijft dit bewust conservatief.`:'Nog geen persoonlijke voorspelling. Log minimaal 3 trainingen met afstand en tijd.';coachAdvice.innerHTML=virtualCoach(trainingLoad());fuelPlan.innerHTML=fuelHtml(nextPlanned().t)}
+function fuelHtml(t){let km=t.km;if(km<12)return '<p class="muted">Voor deze training is water meestal genoeg. Eet normaal 2-3 uur vooraf.</p>';if(km<16)return '<p>Neem water mee. Oefen met <b>1 gel rond 45 minuten</b>.</p>';if(km<21)return '<p>Neem 500 ml water mee. Neem <b>1 gel rond 45 min</b> en eventueel <b>1 gel rond 75-85 min</b>.</p>';return '<p>Raceplan: ontbijt 2-3 uur vooraf. Gel rond <b>45 min</b> en <b>90 min</b>. Drink bij posten kleine slokken.</p>'}
+function renderLogs(){let x=logs();logTable.innerHTML=x.length?`<table><tr><th>Datum</th><th>Type</th><th>Km</th><th>Gem. tempo</th><th>HR</th><th></th></tr>${x.map((r,i)=>`<tr><td>${r.date}<div class="analysisText">${r.analysis||trainingAnalysis(r)}</div></td><td>${r.type}</td><td>${r.km}</td><td>${r.time&&r.km?secToPace(parseTime(r.time)/r.km):''}</td><td>${r.hr||''}</td><td><div class="actions"><button class="edit" onclick="editLog(${i})">Wijzig</button><button class="delete" onclick="deleteLog(${i})">Verwijder</button></div></td></tr>`).join('')}</table>`:'<p class="muted">Nog geen trainingen gelogd.</p>'}
+function renderStats(){let x=logs();sWorkouts.textContent=x.length;sKm.textContent=x.reduce((a,b)=>a+(+b.km||0),0).toFixed(1)+' km';let hrs=x.filter(r=>r.hr).map(r=>r.hr);sAvgHr.textContent=hrs.length?Math.round(hrs.reduce((a,b)=>a+b,0)/hrs.length)+' bpm':'—';let longRuns=x.filter(r=>r.type==='long'||r.type==='long_progressive'||r.km>=10);let longest=Math.max(0,...longRuns.map(r=>+r.km||0),...x.map(r=>+r.km||0));sLongest.textContent=longest?longest+' km':'—';let z2=z2Data();if(z2.length){let best=z2.reduce((a,b)=>a.pace<b.pace?a:b);sBestZ2.textContent=secToPace(best.pace)}else{sBestZ2.textContent='—'}sPrediction.textContent=coachReady()?predText(model().predSec):'—';sFitness.textContent=fitnessScoreCalc()+'/100';sTrend.textContent=trendCalc().label;['pr1','pr5','pr10','prHm'].forEach(id=>{let el=document.getElementById(id); if(el)el.value=localStorage.getItem('hm4-'+id)||''});}
+function savePRs(){['pr1','pr5','pr10','prHm'].forEach(id=>localStorage.setItem('hm4-'+id,document.getElementById(id).value));alert('PR’s opgeslagen')}
+function z2Data(){return logs().filter(r=>(r.type==='easy'||r.type==='long'||r.type==='recovery')&&r.hr&&r.hr<=profileZones().z2[1]+3&&r.km&&parseTime(r.time)).slice(0,12).reverse().map(r=>({date:r.date,pace:parseTime(r.time)/r.km}))}
+function drawZ2(){
+ let c=document.getElementById('z2canvas'); if(!c)return;
+ let ctx=c.getContext('2d'), d=z2Data();
+ ctx.clearRect(0,0,c.width,c.height);
+ const styles=getComputedStyle(document.body), text=styles.getPropertyValue('--text'), muted=styles.getPropertyValue('--muted'), line=styles.getPropertyValue('--line');
+ ctx.font='15px -apple-system'; ctx.fillStyle=muted;
+ if(d.length<2){ctx.fillText('Log minimaal 2 rustige Zone 2-trainingen voor een grafiek.',24,120);return}
+ let paces=d.map(x=>x.pace);
+ let min=Math.min(...paces)-10, max=Math.max(...paces)+10;
+ let left=58,right=20,top=28,bottom=42,w=c.width-left-right,h=c.height-top-bottom;
+ function X(i){return left+i*w/(d.length-1)}
+ function Y(p){return top+(p-min)*h/(max-min)}
+ // grid and y labels
+ ctx.strokeStyle=line; ctx.lineWidth=1; ctx.fillStyle=muted; ctx.font='13px -apple-system';
+ for(let j=0;j<=4;j++){
+   let val=min+(max-min)*j/4, y=Y(val);
+   ctx.beginPath(); ctx.moveTo(left,y); ctx.lineTo(left+w,y); ctx.stroke();
+   ctx.fillText(secToPace(val).replace('/km',''),8,y+4);
+ }
+ // axes labels
+ ctx.fillStyle=text; ctx.font='15px -apple-system';
+ ctx.fillText('Zone 2-tempo ontwikkeling',left,18);
+ ctx.fillStyle=muted; ctx.font='12px -apple-system';
+ ctx.fillText('lager min/km = sneller',left,c.height-10);
+ // line
+ ctx.strokeStyle='#2563eb'; ctx.lineWidth=4; ctx.beginPath();
+ d.forEach((x,i)=>{let y=Y(x.pace); i?ctx.lineTo(X(i),y):ctx.moveTo(X(i),y)});
+ ctx.stroke();
+ // points and labels
+ d.forEach((x,i)=>{
+   ctx.fillStyle='#10b981'; ctx.beginPath(); ctx.arc(X(i),Y(x.pace),6,0,Math.PI*2); ctx.fill();
+ });
+ let first=d[0], last=d[d.length-1];
+ ctx.fillStyle=text; ctx.font='13px -apple-system';
+ ctx.fillText(secToPace(first.pace),X(0)+4,Y(first.pace)-10);
+ ctx.fillText(secToPace(last.pace),Math.min(X(d.length-1)-78,c.width-100),Y(last.pace)-10);
+ // x date labels
+ ctx.fillStyle=muted; ctx.font='12px -apple-system';
+ ctx.fillText(first.date.slice(5),left,c.height-24);
+ ctx.fillText(last.date.slice(5),left+w-36,c.height-24);
+}
+
+function setReadiness(value,btn){
+ localStorage.setItem('hm4-readiness',value);
+ document.querySelectorAll('.readiness button').forEach(b=>b.classList.remove('active'));
+ if(btn)btn.classList.add('active');
+ let msg='';
+ if(value==='fris')msg='<span class="good">Je bent fris.</span> Training kan zoals gepland.';
+ if(value==='normaal')msg='Prima. Doe de training volgens schema en houd rustige trainingen echt rustig.';
+ if(value==='vermoeid')msg='<span class="warn">Vermoeide benen.</span> Loop vandaag rustiger en blijf laag in Zone 2.';
+ if(value==='erg-vermoeid')msg='<span class="warn">Erg vermoeid.</span> Maak er een hersteltraining van of neem rust.';
+ if(value==='pijn')msg='<span class="danger">Pijn/blessure.</span> Niet forceren. Kies rust of wandelen; bij aanhoudende pijn: professional raadplegen.';
+ readinessAdvice.innerHTML=msg;
+}
+function restoreReadiness(){
+ let v=localStorage.getItem('hm4-readiness')||'';
+ if(!v){readinessAdvice.textContent='Kies vóór je training hoe je je voelt. De coach past het advies daarop aan.';return}
+ setReadiness(v,null);
+ document.querySelectorAll('.readiness button').forEach(b=>{if(b.getAttribute('onclick')&&b.getAttribute('onclick').includes(`'${v}'`))b.classList.add('active')});
+}
+
+let watchId=null,trackPoints=[],trackStart=0,trackTimer=null;
+function haversine(a,b){
+ const R=6371e3, toRad=x=>x*Math.PI/180;
+ const dLat=toRad(b.lat-a.lat), dLon=toRad(b.lon-a.lon);
+ const lat1=toRad(a.lat), lat2=toRad(b.lat);
+ const s=Math.sin(dLat/2)**2+Math.cos(lat1)*Math.cos(lat2)*Math.sin(dLon/2)**2;
+ return 2*R*Math.asin(Math.sqrt(s));
+}
+function trackDistance(){
+ let m=0; for(let i=1;i<trackPoints.length;i++)m+=haversine(trackPoints[i-1],trackPoints[i]); return m;
+}
+function fmtTime(sec){sec=Math.floor(sec);let h=Math.floor(sec/3600),m=Math.floor((sec%3600)/60),s=sec%60;return h?`${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`:`${m}:${String(s).padStart(2,'0')}`}
+function updateTrackerUI(){
+ let elapsed=trackStart?(Date.now()-trackStart)/1000:0, km=trackDistance()/1000;
+ trackTime.textContent=fmtTime(elapsed); trackKm.textContent=km.toFixed(2);
+ trackPace.textContent=km>0.05?secToPace(elapsed/km):'—';
+ drawRoute();
+}
+function startTracking(){
+ if(!navigator.geolocation){trackStatus.textContent='GPS wordt niet ondersteund in deze browser.';return}
+ trackPoints=[]; trackStart=Date.now(); updateTrackerUI();
+ trackStatus.textContent='GPS gestart. Wacht op locatie...';
+ watchId=navigator.geolocation.watchPosition(pos=>{
+   let p={lat:pos.coords.latitude,lon:pos.coords.longitude,t:Date.now(),acc:pos.coords.accuracy};
+   if(!trackPoints.length || haversine(trackPoints[trackPoints.length-1],p)>5)trackPoints.push(p);
+   trackStatus.textContent=`GPS actief · punten: ${trackPoints.length} · nauwkeurigheid ±${Math.round(p.acc)}m`;
+   updateTrackerUI();
+ },err=>{trackStatus.textContent='GPS-fout: '+err.message},{enableHighAccuracy:true,maximumAge:1000,timeout:10000});
+ clearInterval(trackTimer); trackTimer=setInterval(updateTrackerUI,1000);
+}
+function stopTracking(){
+ if(watchId!==null)navigator.geolocation.clearWatch(watchId);
+ watchId=null; clearInterval(trackTimer); trackTimer=null;
+ trackStatus.textContent='GPS gestopt. Je kunt de training nu opslaan in het logboek.';
+ updateTrackerUI();
+}
+function saveTrackedRun(){
+ let km=trackDistance()/1000, elapsed=trackStart?(Date.now()-trackStart)/1000:0;
+ if(km<0.05||elapsed<30){alert('Te weinig GPS-data om op te slaan.');return}
+ logType.value='easy'; logDate.value=new Date().toISOString().slice(0,10); logKm.value=km.toFixed(2); logTime.value=fmtTime(elapsed);
+ logNote.value='GPS-training via Run Coach'; localStorage.setItem('hm4-last-route',JSON.stringify(trackPoints));
+ stopTracking(); updatePacePreview(); tab('log'); lastRouteInfo.textContent=`Laatste route: ${km.toFixed(2)} km in ${fmtTime(elapsed)}.`;
+}
+function drawRoute(){
+ let c=document.getElementById('routeCanvas'); if(!c)return;
+ let ctx=c.getContext('2d'); ctx.clearRect(0,0,c.width,c.height);
+ ctx.fillStyle=getComputedStyle(document.body).getPropertyValue('--muted'); ctx.font='15px -apple-system';
+ if(trackPoints.length<2){ctx.fillText('Route verschijnt zodra er minimaal 2 GPS-punten zijn.',24,160);return}
+ let xs=trackPoints.map(p=>p.lon), ys=trackPoints.map(p=>p.lat), minX=Math.min(...xs),maxX=Math.max(...xs),minY=Math.min(...ys),maxY=Math.max(...ys);
+ let pad=28, w=c.width-pad*2,h=c.height-pad*2;
+ function X(lon){return pad+(lon-minX)/(maxX-minX||1)*w}
+ function Y(lat){return c.height-pad-(lat-minY)/(maxY-minY||1)*h}
+ ctx.strokeStyle='#2563eb'; ctx.lineWidth=5; ctx.beginPath();
+ trackPoints.forEach((p,i)=>{i?ctx.lineTo(X(p.lon),Y(p.lat)):ctx.moveTo(X(p.lon),Y(p.lat))}); ctx.stroke();
+ ctx.fillStyle='#10b981'; ctx.beginPath(); ctx.arc(X(trackPoints[0].lon),Y(trackPoints[0].lat),7,0,Math.PI*2); ctx.fill();
+ ctx.fillStyle='#ef4444'; let last=trackPoints[trackPoints.length-1]; ctx.beginPath(); ctx.arc(X(last.lon),Y(last.lat),7,0,Math.PI*2); ctx.fill();
+}
+
+function buildExport(){
+ let obj={
+   version:'Run Coach 9.0',
+   exportedAt:new Date().toISOString(),
+   profile:getProfile(),
+   profileComplete:hasProfile(),
+   logs:logs(),
+   prs:{
+     pr1:localStorage.getItem('hm4-pr1')||'',
+     pr5:localStorage.getItem('hm4-pr5')||'',
+     pr10:localStorage.getItem('hm4-pr10')||'',
+     prHm:localStorage.getItem('hm4-prHm')||''
+   },
+   notes:{},
+   checkboxes:{}
+ };
+ weeks.forEach(w=>{
+   obj.notes[w.week]=localStorage.getItem(nkey(w.week))||'';
+   w.trainings.forEach((_,i)=>obj.checkboxes[k(w.week,i)]=localStorage.getItem(k(w.week,i))||'');
+ });
+ return JSON.stringify(obj,null,2);
+}
+function exportData(){
+ const text=buildExport();
+ exportBox.value=text;
+ exportBox.focus();
+ exportBox.select();
+ try{document.execCommand('copy')}catch(e){}
+ if(navigator.clipboard){
+   navigator.clipboard.writeText(text).then(()=>alert('Export gemaakt en gekopieerd. Bewaar hem in Notities of download een back-up.')).catch(()=>alert('Export gemaakt. Kopieer de tekst handmatig uit het exportvak.'));
+ }else{
+   alert('Export gemaakt. Kopieer de tekst handmatig uit het exportvak.');
+ }
+}
+function downloadExport(){
+ const text=exportBox.value.trim()||buildExport();
+ exportBox.value=text;
+ const blob=new Blob([text],{type:'application/json'});
+ const url=URL.createObjectURL(blob);
+ const a=document.createElement('a');
+ a.href=url;
+ a.download='hm-coach-backup.json';
+ document.body.appendChild(a);
+ a.click();
+ document.body.removeChild(a);
+ URL.revokeObjectURL(url);
+}
+function importData(){
+ let raw=importBox.value.trim();
+ if(!raw){alert('Plak eerst je export-data in het veld.');return}
+ let obj;
+ try{obj=JSON.parse(raw)}catch(e){alert('Import mislukt: dit is geen geldige JSON/export.');return}
+ if(!confirm('Weet je zeker dat je deze data wilt importeren? Bestaande logs/PR’s kunnen worden overschreven.'))return;
+ if(obj.profile){localStorage.setItem('hm4-profile',JSON.stringify(obj.profile));localStorage.setItem('hm4-profile-complete','1');}
+ if(Array.isArray(obj.logs))setLogs(obj.logs);
+ if(obj.prs){
+   ['pr1','pr5','pr10','prHm'].forEach(id=>{
+     if(obj.prs[id]!==undefined && obj.prs[id]!==null)localStorage.setItem('hm4-'+id,obj.prs[id]);
+   });
+ }
+ if(obj.notes){
+   Object.keys(obj.notes).forEach(w=>localStorage.setItem('hm4-note-'+w,obj.notes[w]||''));
+ }
+ if(obj.checkboxes){
+   Object.keys(obj.checkboxes).forEach(key=>{
+     if(obj.checkboxes[key])localStorage.setItem(key,obj.checkboxes[key]);
+     else localStorage.removeItem(key);
+   });
+ }
+ importBox.value='';
+ applyProfile();
+ loadProfileForm();
+ renderPlan();
+ update();
+ alert('Import gelukt. Je data is teruggezet.');
+}
+function resetAll(){if(!confirm('Alle vinkjes wissen?'))return;weeks.forEach(w=>w.trainings.forEach((_,i)=>localStorage.removeItem(k(w.week,i))));renderPlan()}
+function setBottomActive(name){['bottom-now','bottom-dashboard','bottom-finish'].forEach(id=>{let el=document.getElementById(id);if(el)el.classList.remove('active')}); if(name==='now'){let bottomNow=document.getElementById('bottom-now'); if(bottomNow)bottomNow.classList.add('active')} if(name==='dashboard'){let bottomDash=document.getElementById('bottom-dashboard'); if(bottomDash)bottomDash.classList.add('active')}}
+function tab(name){['dashboard','plan','now','log','coach','stats','profile','info'].forEach(x=>{document.getElementById(x).classList.toggle('hidden',x!==name);let b=document.getElementById('tab-'+x);if(b)b.classList.toggle('active',x===name)});setBottomActive(name);window.scrollTo({top:0,behavior:'smooth'});}
+applyProfile(); renderPlan(); logDate.value=new Date().toISOString().slice(0,10); updatePacePreview(); restoreReadiness(); loadProfileForm(); update(); showOnboardingIfNeeded();
+</script>
+</body></html>
